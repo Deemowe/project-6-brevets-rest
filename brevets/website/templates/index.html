@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Brevets DB Requests</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        #options {
+            margin-top: 20px;
+        }
+
+        #options label {
+            margin-right: 10px;
+        }
+
+        #options input[type="checkbox"] {
+            margin-right: 5px;
+        }
+
+        #options button {
+            padding: 5px 10px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        #results {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <h1>Brevets DB Requests</h1>
+    <div id="options">
+        <label for="csvInput"><b>CSV?</b></label>
+        <input type="checkbox" id="csvInput"><br><br>
+
+        <button id="allTimes">Retrieve All Control Times</button><br><br>
+
+        <label for="openInput"><b>Open Entries:</b></label>
+        <input type="number" id="openInput" name="openInput" min="0" max="20" placeholder="How many entries?" style="width: 130px;">
+        <button id="openTimes">Retrieve Open Times</button><br><br>
+
+        <label for="closeInput"><b>Close Entries:</b></label>
+        <input type="number" id="closeInput" name="closeInput" min="0" max="20" placeholder="How many entries?" style="width: 130px;">
+        <button id="closeTimes">Retrieve Close Times</button>
+    </div>
+    <div>
+        <h1>Results:</h1>
+        <p id="results"></p>
+    </div>
+    <script>
+      <!-- List of the URLS --> 
+      var allTimesURL = "/listAll";
+      var openTimesURL = "/listOpen";
+      var closeTimesURL = "/listClose";
+  
+      $("#allTimes").click(
+          function(event) {
+              var csvCheck = document.getElementById("csvInput").checked;
+              console.log(`csvCheck = ${csvCheck}`);
+              csvCheck = String(csvCheck)
+  
+              // JSON request to the REST API for all control times (open,close)
+              $.getJSON(allTimesURL, { csv: csvCheck }).done(
+                  function(response) {
+                      // Store the results of our request to the DB into the "results" <p> tag
+                      $("#results").text(response.all_list);
+                      console.log("Displayed the requested DB info in the results <p> tag")
+                  }
+  
+              );
+  
+  
+          }); // end of allTimes click
+  
+  
+      $("#openTimes").click(
+          function(event) {
+              event.preventDefault();
+              var csvCheck = document.getElementById("csvInput").checked;
+              console.log(`csvCheck = ${csvCheck}`);
+              // Need to convert to a string because otherwise its always True in Flask
+              csvCheck = String(csvCheck)
+  
+              var openVal = $("#openInput").val();
+              var top_k;
+              if (!openVal) {
+                  top_k = 0;
+              } else {
+                  // If it's between 0 and 20, it's valid and we can request that amount, otherwise
+                  // just set it to 0 to make it so we don't have to do any error handling
+                  top_k = (openVal >= 0 && openVal <= 20) ? openVal : 0;
+              }
+  
+              // JSON request to the REST API for opening times only
+              $.getJSON(openTimesURL, { csv: csvCheck, top: top_k }).done(
+                  function(response) {
+                      // Store the results of our request to the DB into the "results" <p> tag
+                      $("#results").text(response.open_list);
+                      console.log("Displayed the requested DB info in the results <p> tag");
+                  }
+  
+              );
+  
+  
+          }); // end of openTimes click
+  
+  
+      $("#closeTimes").click(
+          function(event) {
+              var csvCheck = document.getElementById("csvInput").checked;
+              console.log(`csvCheck = ${csvCheck}`);
+              // Need to convert to a string because otherwise its always True in Flask
+              csvCheck = String(csvCheck)
+  
+              var closeVal = $("#closeInput").val();
+              var top_k;
+              if (!closeVal) {
+                  top_k = 0;
+              } else {
+                  // If it's between 0 and 20, it's valid and we can request that amount, otherwise
+                  // just set it to 0 to make it so we don't have to do any error handling
+                  top_k = (closeVal >= 0 && closeVal <= 20) ? closeVal : 0;
+              }
+  
+  
+              // JSON request to the REST API for closing times only
+              $.getJSON(closeTimesURL, { csv: csvCheck, top: top_k }).done(
+                  function(response) {
+                      // Store the results of our request to the DB into the "results" <p> tag
+                      $("#results").text(response.close_list);
+                      console.log("Displayed the requested DB info in the results <p> tag");
+                  }
+  
+              );
+  
+          }); // end of closeTimes click
+      </script>
+</body>
+
+</html>
