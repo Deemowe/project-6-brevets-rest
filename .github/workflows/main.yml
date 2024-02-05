@@ -1,0 +1,30 @@
+name: Docker Image
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+  
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Build a docker image
+      run: | 
+          docker build -t flask-app .
+
+    - name: Run docker container 
+      run: |
+        docker run --name app -d flask-app
+
+
+    - name: Docker cleanup
+      run: |
+          docker stop app
+          docker rm app
+        
+        
+    
+    
+  
