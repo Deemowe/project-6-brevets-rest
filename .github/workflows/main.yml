@@ -1,30 +1,25 @@
-name: Docker Image
+name: Docker Image CI
 
 on: push
 
 jobs:
   build:
     runs-on: ubuntu-latest
-  
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Build a docker image
-      run: | 
-          docker build -t flask-app .
-
-    - name: Run docker container 
+    - name: Build Docker image
       run: |
-        docker run --name app -d flask-app
+        docker build -t my-flask-app .
 
-
-    - name: Docker cleanup
+    - name: Run Docker container
       run: |
-          docker stop app
-          docker rm app
-        
-        
-    
-    
-  
+        docker run --name app -d my-flask-app
+        sleep 10 # Wait for the container to fully start
+
+    - name: Docker Cleanup
+      run: |
+        docker stop app
+        docker rm app
