@@ -12,7 +12,7 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t my-flask-app .
+        docker build -t my-flask-app brevets/Dockerfile
 
     - name: Run Docker container
       run: |
