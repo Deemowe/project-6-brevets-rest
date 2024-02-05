@@ -8,7 +8,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3 # Updated for Node.js 20 compatibility
+      uses: actions/checkout@v4 # Updated for Node.js 20 compatibility
 
     - name: Build Docker image
       run: |
