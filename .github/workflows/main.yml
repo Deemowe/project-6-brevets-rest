@@ -24,3 +24,12 @@ jobs:
       run: |
         docker stop app
         docker rm app
+  print:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Done
+      run: |
+          pwd
+          ls
+          echo "Done"
