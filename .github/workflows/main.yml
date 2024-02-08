@@ -12,12 +12,12 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t my-flask-app .
+        docker build -t my-flask-app . #build
       working-directory: ./brevets
 
     - name: Run Docker container
       run: |
-        docker run --name app -d my-flask-app
+        docker run -it --name  app -d my-flask-app  #test
         sleep 10 # Wait for the container to fully start
 
     - name: Docker Cleanup
