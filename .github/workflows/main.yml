@@ -31,5 +31,5 @@ jobs:
     - name: Done
       run: |
           pwd
-          ls
+          ls -al
           echo "Done"
